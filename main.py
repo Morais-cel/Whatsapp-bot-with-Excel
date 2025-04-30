@@ -45,11 +45,365 @@ def prog_inicial():
         if not os.path.exists(prog_inicial.Nav_config):
             os.makedirs(prog_inicial.Nav_config)
 
+    def create_last():
+        if not os.path.exists(r"C:\Python\Bot_Whatsapp\last_open.txt"):
+            with open(os.path.exists(r"C:\Python\Bot_Whatsapp\last_open.txt"),"w") as arq:
+                arq.write("")
+
+    def config():
+        create_navconf()
+        create_excel()
+        create_last()
+
+    def tutorial_func(): #Interface FLET feita para iniciar um tutorial para o usuário
+        def main(page: ft.Page):
+            imgs_folder=fr"{os.path.dirname(os.path.abspath(__file__))}\Img"
+            main.num=0
+
+            def hover_but_inf(e):
+                if e.data=="true":
+                    e.control.width=230
+                    e.control.right=page.window.width/2-115
+                    e.control.content=ft.Text(
+                                            value="Clique para ver as informações",
+                                            overflow=ft.TextOverflow.ELLIPSIS,
+                                            max_lines=1,
+                                            color=ft.colors.BLACK,
+                                            style=ft.TextStyle(
+                                                            weight=ft.FontWeight.BOLD
+                                            )
+                    )
+                else:
+                    e.control.width=30
+                    e.control.right=page.window.width/2-25
+                e.control.update()
+
+            def hover_but_inf2(e):
+                if e.data=="true":
+                    e.control.width=250
+                    e.control.content=ft.Text(
+                                            value="Clique para ocultar as informacoes",
+                                            overflow=ft.TextOverflow.ELLIPSIS,
+                                            max_lines=1,
+                                            color=ft.colors.BLACK,
+                                            style=ft.TextStyle(
+                                                            weight=ft.FontWeight.BOLD
+                                            )
+                    )
+                else:
+                    e.control.width=30
+                e.control.update()
+
+            def but_animat_end(e):
+                if e.control.width==30:
+                    if e.control.data=="inf_but":
+                        e.control.content=ft.Icon(
+                                                name=ft.Icons.INFO_OUTLINED,
+                                                color=ft.colors.BLACK
+                        )
+                    else:
+                        e.control.content=ft.Icon(
+                                                name=ft.Icons.ARROW_DOWNWARD_ROUNDED,
+                                                color=ft.colors.BLACK
+                        )
+                    e.control.update()
+
+            def change_button(e):
+                if e.data=="true":
+                    if e.control.data=="min_but":
+                        e.control.content.color=ft.colors.RED
+                        e.control.bgcolor=ft.colors.BLACK38
+                    else:
+                        e.control.content.color=ft.colors.GREEN
+                        e.control.bgcolor=ft.colors.BLACK38
+                else:
+                    if e.control.data=="min_but":
+                        e.control.content.color=ft.colors.RED
+                    else:
+                        e.control.content.color=ft.colors.GREEN
+                    e.control.bgcolor=ft.colors.TRANSPARENT
+                e.control.update()
+
+            def inf_container_show(e):
+                if e.control.data=="inf_but2":
+                    src_val=os.path.join(imgs_folder,"exp_page2.png")
+                    scale_val=0.8
+                else:
+                    src_val=os.path.join(imgs_folder,"exp_page3.png")
+                    scale_val=0.8
+                if e.control.data=="inf_but2" or e.control.data=="inf_but3":
+                    init.content.controls[0].content.controls[0].controls[1].opacity=0
+                    init.content.controls[0].content.controls[1].height=page.window.height-50
+                    init.content.controls[0].content.controls[1].content=ft.Column(
+                                                                                width=page.window.width-30,
+                                                                                height=page.window.height-50,
+                                                                                spacing=0,
+                                                                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                                                                controls=[
+                                                                                    ft.Container(
+                                                                                            width=30,
+                                                                                            height=30,
+                                                                                            alignment=ft.alignment.center,
+                                                                                            content=ft.Icon(
+                                                                                                        name=ft.Icons.ARROW_DOWNWARD_ROUNDED,
+                                                                                                        color=ft.colors.BLACK,
+                                                                                            ),
+                                                                                            bgcolor=ft.colors.BLACK38,
+                                                                                            margin=5,
+                                                                                            border_radius=ft.border_radius.all(5),
+                                                                                            animate=ft.animation.Animation(600, "bouceout"),
+                                                                                            on_hover=hover_but_inf2,
+                                                                                            on_click=inf_container_show,
+                                                                                            on_animation_end=but_animat_end,
+                                                                                            data="back_but"
+                                                                                    ),
+                                                                                    ft.Image(
+                                                                                        width=page.window.width,
+                                                                                        src=src_val,
+                                                                                        scale=scale_val
+                                                                                    )
+                                                                                ]
+                    )
+                else:
+                    init.content.controls[0].content.controls[0].controls[1].opacity=1
+                    init.content.controls[0].content.controls[1].height=0
+                    init.content.controls[0].content.controls[1].content=ft.Text("")
+
+                page.update()
+                e.control.update()
+
+            def change_bg(e):
+                if e.control.data=="min_but": #Processo para realizar o carrossel de fotos tutoriais
+                    if main.num<=1: 
+                        main.num=4
+                    else:
+                        main.num-=1
+                else:
+                    if main.num>=4:
+                        main.num=1
+                    else:
+                        main.num+=1
+                #print(main.num)
+
+                match main.num:
+                    case 1:
+                        init.content.controls[0].content=ft.Row(
+                                                            alignment=ft.MainAxisAlignment.CENTER,
+                                                            spacing=5,
+                                                            width=page.window.width/2,
+                                                            height=page.window.height-60,
+                                                            controls=[
+                                                                ft.Image(
+                                                                    src=os.path.join(imgs_folder,"Tela_what.png")
+                                                                ),
+                                                                ft.Container(
+                                                                    width=page.window.width/2-10,
+                                                                    height=page.window.height-60,
+                                                                    content=ft.Text(
+                                                                        value="Ao utilizar o aplicativo pela primeira vez você irá se deparar com a tela de login apresentada na imagem. Essa tela se deve ao fato de que o aplicativo utiliza novos arquivos do navegador para realizar o processo de abertura do Whatsapp.\nRealize o login de forma normal e, logo após, feche a janela do navegador para evitar possíveis problemas.\nFique tranquilo, esse processo será necessário somente uma vez.",
+                                                                        size=12,
+                                                                        text_align=ft.TextAlign.JUSTIFY
+                                                                    ),
+                                                                    bgcolor=ft.colors.WHITE10,
+                                                                    border_radius=ft.border_radius.all(5),
+                                                                    padding=5,
+                                                                    alignment=ft.alignment.center
+                                                                )
+                                                            ]
+                        )
+                    case 2:
+                        init.content.controls[0].content=ft.Stack(
+                                                            width=page.window.width,
+                                                            controls=[
+                                                                ft.Stack(
+                                                                        controls=[
+                                                                                ft.Image(
+                                                                                    width=page.window.width,
+                                                                                    height=page.window.height,
+                                                                                    src=os.path.join(imgs_folder,"Pastas_essenc.png"),
+                                                                                    fit=ft.ImageFit.FILL
+                                                                                ),
+                                                                                ft.Container(
+                                                                                    width=30,
+                                                                                    height=30,
+                                                                                    content=ft.Icon(
+                                                                                        name=ft.Icons.INFO_OUTLINED,
+                                                                                        color=ft.colors.BLACK
+                                                                                    ),
+                                                                                    bgcolor=ft.colors.WHITE24,
+                                                                                    right=page.window.width/2-25,
+                                                                                    bottom=5,
+                                                                                    border_radius=ft.border_radius.all(5),
+                                                                                    animate=ft.animation.Animation(600, "bouceOut"),
+                                                                                    animate_position=ft.animation.Animation(600, "bouceOut"),
+                                                                                    on_animation_end=but_animat_end,
+                                                                                    alignment=ft.alignment.center,
+                                                                                    on_hover=hover_but_inf,
+                                                                                    on_click=inf_container_show,
+                                                                                    data="inf_but2"
+                                                                                )
+                                                                        ]
+                                                                ),
+                                                                ft.Container(
+                                                                    width=page.window.width,
+                                                                    height=0,
+                                                                    bottom=0,
+                                                                    bgcolor=ft.colors.WHITE60,
+                                                                    animate=ft.animation.Animation(600, "bouceOut"),
+                                                                    alignment=ft.alignment.center_left
+                                                                )
+                                                            ]
+                        )
+                    case 3:
+                        init.content.controls[0].content=ft.Stack(
+                                                            width=page.window.width,
+                                                            controls=[
+                                                                ft.Stack(
+                                                                        controls=[
+                                                                                ft.Image(
+                                                                                    width=page.window.width,
+                                                                                    height=page.window.height,
+                                                                                    src=os.path.join(imgs_folder,"Desktop.png"),
+                                                                                    fit=ft.ImageFit.FILL
+                                                                                ),
+                                                                                ft.Container(
+                                                                                    width=30,
+                                                                                    height=30,
+                                                                                    content=ft.Icon(
+                                                                                        name=ft.Icons.INFO_OUTLINED,
+                                                                                        color=ft.colors.BLACK
+                                                                                    ),
+                                                                                    bgcolor=ft.colors.WHITE24,
+                                                                                    right=page.window.width/2-25,
+                                                                                    bottom=5,
+                                                                                    border_radius=ft.border_radius.all(5),
+                                                                                    animate=ft.animation.Animation(600, "bouceOut"),
+                                                                                    animate_position=ft.animation.Animation(600, "bouceOut"),
+                                                                                    on_animation_end=but_animat_end,
+                                                                                    alignment=ft.alignment.center,
+                                                                                    on_hover=hover_but_inf,
+                                                                                    on_click=inf_container_show,
+                                                                                    data="inf_but3"
+                                                                                )
+                                                                        ]
+                                                                ),
+                                                                ft.Container(
+                                                                    width=page.window.width,
+                                                                    height=0,
+                                                                    bottom=0,
+                                                                    bgcolor=ft.colors.WHITE60,
+                                                                    animate=ft.animation.Animation(600, "bouceOut"),
+                                                                    alignment=ft.alignment.center_left
+                                                                )
+                                                            ]
+                        )
+                    case 4:
+                        init.content.controls[0].content=ft.Stack(
+                                                            width=page.window.width,
+                                                            controls=[
+                                                                ft.Stack(
+                                                                        controls=[
+                                                                                ft.Image(
+                                                                                    width=page.window.width,
+                                                                                    height=page.window.height,
+                                                                                    src=os.path.join(imgs_folder,"Fim_tutorial.png")
+                                                                                )
+                                                                        ]
+                                                                )
+                                                            ]
+                        )
+                page.update()
+
+            page.window.width=500
+            page.window.height=300
+            page.window.resizable=False
+            page.window.icon=os.path.join(imgs_folder,"whatsapp.ico")
+            page.title="Tutorial inicial"
+            page.window.alignment=ft.alignment.center
+
+            but1=ft.ElevatedButton(
+                        content=ft.Icon(
+                                name=ft.Icons.ARROW_BACK_ROUNDED,
+                                size=40,
+                                color=ft.colors.RED,
+                                opacity=0.6
+                        ),
+                        width=60,
+                        height=100,
+                        style=ft.ButtonStyle(
+                                            shape=ft.RoundedRectangleBorder(radius=5),
+                                            shadow_color=ft.colors.TRANSPARENT,
+                                            overlay_color=ft.colors.TRANSPARENT,
+                                            alignment=ft.alignment.center_left
+                                    ),
+                        bgcolor=ft.colors.TRANSPARENT,
+                        on_hover=change_button,
+                        on_click=change_bg,
+                        data="min_but",
+            )
+
+            but2=ft.ElevatedButton(
+                        content=ft.Icon(
+                                name=ft.Icons.ARROW_FORWARD_ROUNDED,
+                                size=40,
+                                color=ft.colors.GREEN,
+                                opacity=0.6
+                        ),
+                        width=60,
+                        height=100,
+                        style=ft.ButtonStyle(
+                                            shape=ft.RoundedRectangleBorder(radius=5),
+                                            shadow_color=ft.colors.TRANSPARENT,
+                                            overlay_color=ft.colors.TRANSPARENT,
+                                            alignment=ft.alignment.center_right
+                                    ),
+                        bgcolor=ft.colors.TRANSPARENT,
+                        on_hover=change_button,
+                        on_click=change_bg,
+                        data="mor_but"
+            )
+
+            msg_init=ft.Image(
+                width=page.window.width,
+                src=os.path.join(imgs_folder,"Init.png"),
+                scale=0.9
+            )
+
+            init=ft.Container(
+                    width=page.window.width,
+                    height=page.window.height-50,
+                    content=ft.Stack(
+                                controls=[
+                                        ft.Container(
+                                            width=page.window.width,
+                                            height=page.window.height-50,
+                                            content=msg_init
+                                        ),
+                                        ft.Row(
+                                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                            spacing=0,
+                                            width=page.window.width-20,
+                                            height=page.window.height,
+                                            controls=[
+                                                but1,
+                                                but2,
+                                            ]
+                                        )
+                                ]
+                    ),
+                    bgcolor=ft.colors.WHITE10,
+                    margin=-5,
+                    border_radius=ft.border_radius.all(5)
+                )
+
+            page.add(init)
+        ft.app(main)
+
+
     #----------------------------------------------------------------------------------
     #Estrutura do código
 
-    create_navconf()
-    create_excel()
+    config()
 
     opt=webdriver.EdgeOptions()
     opt.add_argument(f"--user-data-dir={prog_inicial.Nav_config}") #Definir local para salvar as configurações definidas ao navegador
@@ -57,6 +411,8 @@ def prog_inicial():
 
     nav=webdriver.ChromiumEdge(options=opt)
     nav.get("https://web.whatsapp.com")
+
+    tutorial_func()
 
 def prog_principal():
     #----------------------------------------------------------------------------------
@@ -94,12 +450,12 @@ def prog_principal():
 
     def Last_open(): #Função que sobrescreve o arquivo txt e informa quando foi a última abertura do aplicativo
         check_last()
-        last_open_file=os.path.join(os.path.dirname(os.path.abspath(__file__)),"last_open.txt")
+        last_open_file=os.path.join(r"C:\Python\Bot_Whatsapp","last_open.txt")
         with open(last_open_file,"w") as arq:
             arq.write(f"{prog_principal.day}.{prog_principal.month}.{prog_principal.year}")
 
     def check_last(): #Função responsável por verificar se o programa já foi aberto no dia
-        last_open_file=os.path.join(os.path.dirname(os.path.abspath(__file__)),"last_open.txt")
+        last_open_file=os.path.join(r"C:\Python\Bot_Whatsapp","last_open.txt")
         att_day=f"{prog_principal.day}.{prog_principal.month}.{prog_principal.year}"
         with open(last_open_file,"r") as arq:
             inf_arq=arq.read()
@@ -113,7 +469,7 @@ def prog_principal():
             page.window.width=320
             page.window.resizable=False
             page.window.alignment=ft.alignment.center
-            page.window.icon=os.path.join(os.path.dirname(os.path.abspath(__file__)),"whatsapp.ico")
+            page.window.icon=os.path.join(fr"{os.path.dirname(os.path.abspath(__file__))}\Img","whatsapp.ico")
             page.title="Verificação"
 
             def next_step(e): #Define,utilizando a data do botão selecionado, qual será a ação realizada a seguir, além de que fecha as janelas abertas pelo flet
@@ -260,7 +616,7 @@ def prog_principal():
     nav.close()
 
 if not os.path.exists(folder1) or not os.path.exists(folder2):
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"last_open.txt"),"w") as arq:
+    with open(os.path.join(r"C:\Python\Bot_Whatsapp","last_open.txt"),"w") as arq:
         arq.write("")
     prog_inicial()
 else:
