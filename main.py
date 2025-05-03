@@ -47,7 +47,7 @@ def prog_inicial():
 
     def create_last():
         if not os.path.exists(r"C:\Python\Bot_Whatsapp\last_open.txt"):
-            with open(os.path.exists(r"C:\Python\Bot_Whatsapp\last_open.txt"),"w") as arq:
+            with open(r"C:\Python\Bot_Whatsapp\last_open.txt","w") as arq:
                 arq.write("")
 
     def config():
@@ -96,7 +96,7 @@ def prog_inicial():
 
             def but_animat_end(e):
                 if e.control.width==30:
-                    if e.control.data=="inf_but":
+                    if not e.control.data=="back_but":
                         e.control.content=ft.Icon(
                                                 name=ft.Icons.INFO_OUTLINED,
                                                 color=ft.colors.BLACK
@@ -418,10 +418,15 @@ def prog_principal():
     #----------------------------------------------------------------------------------
     #Definição do dia atual
     list_date=str(datetime.date.today()).split("-")
-    prog_principal.day=list_date[2]
+    prog_principal.day_today=list_date[2]
+    if int(prog_principal.day_today)>=10:
+        prog_principal.day_cons=prog_principal.day_today
+    else:
+        prog_principal.day_cons="0"+str(int(prog_principal.day_today)+1)
     prog_principal.month=list_date[1]
     prog_principal.year=list_date[0]
-    #print(day,month,year)
+    print(int(list_date[2]))
+    #print(prog_principal.day,prog_principal.month,prog_principal.year)
 
     #--------------------------
 
@@ -433,7 +438,9 @@ def prog_principal():
         book_ncons=len(mes_inf["B"]) #Número de consultas existentes no mês
         for i in range(2,book_ncons+1):
             cell=str(mes_inf.cell(row=i,column=2).value)
-            if cell==str(int(prog_principal.day)+1):
+            print(cell)
+            print(f"{prog_principal.day_cons}.{prog_principal.month}.{prog_principal.year}")
+            if cell==f"{prog_principal.day_cons}.{prog_principal.month}.{prog_principal.year}":
                 row_cons.append(i)
         return row_cons
 
@@ -452,11 +459,11 @@ def prog_principal():
         check_last()
         last_open_file=os.path.join(r"C:\Python\Bot_Whatsapp","last_open.txt")
         with open(last_open_file,"w") as arq:
-            arq.write(f"{prog_principal.day}.{prog_principal.month}.{prog_principal.year}")
+            arq.write(f"{prog_principal.day_today}.{prog_principal.month}.{prog_principal.year}")
 
     def check_last(): #Função responsável por verificar se o programa já foi aberto no dia
         last_open_file=os.path.join(r"C:\Python\Bot_Whatsapp","last_open.txt")
-        att_day=f"{prog_principal.day}.{prog_principal.month}.{prog_principal.year}"
+        att_day=f"{prog_principal.day_today}.{prog_principal.month}.{prog_principal.year}"
         with open(last_open_file,"r") as arq:
             inf_arq=arq.read()
             if inf_arq==att_day:
@@ -553,10 +560,10 @@ def prog_principal():
     book_month=arq_xl[f"{prog_principal.month}"] #Selecionar worksheet do mês atual
 
     row_cons=Row_cons(book_month) #Função que define quais linhas da sheet contêm consultas para o dia atual
-    #print(row_cons)
+    print(row_cons)
 
     day_consult=Infs(row_cons) #Função que define uma lista que contêm as consultas que ocorrerão no dia seguindo o padrão (paciente,médico,telefone)
-    #print(day_consult)
+    print(day_consult)
 
     Last_open()
 
@@ -583,7 +590,7 @@ def prog_principal():
 
     def send_msg(inf):
         month_str=("Jan.", "Fev.", "Mar.", "Abr.", "Mai.", "Jun.", "Jul.", "Ago.", "Set.", "Out.", "Nov.", "Dez.")
-        msg=f"Bom dia, *{inf["Paciente"]}*. Tudo bem? Espero que sim. Passando para lembrar que sua consulta com o(a) doutor(a) *{inf["Médico"]}* está marcada para amanhã, *{str(int(prog_principal.day)+1)} de {month_str[int(prog_principal.month)+1]}*. Qualquer dúvida estou a disposição!!"
+        msg=f"Bom dia, *{inf["Paciente"]}*. Tudo bem? Espero que sim. Passando para lembrar que sua consulta com o(a) doutor(a) *{inf["Médico"]}* está marcada para amanhã, *{prog_principal.day_cons} de {month_str[int(prog_principal.month)+1]}*. Qualquer dúvida estou a disposição!!"
         chat=nav.find_element(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span/div/div[2]/div[1]/div[2]/div[1]/p')
         chat.send_keys(msg)
         sleep(0.5)
@@ -616,8 +623,10 @@ def prog_principal():
     nav.close()
 
 if not os.path.exists(folder1) or not os.path.exists(folder2):
-    with open(os.path.join(r"C:\Python\Bot_Whatsapp","last_open.txt"),"w") as arq:
-        arq.write("")
-    prog_inicial()
+    if os.path.exists(os.path.join(r"C:\Python\Bot_Whatsapp","last_open.txt")):
+        with open(os.path.join(r"C:\Python\Bot_Whatsapp","last_open.txt"),"w") as arq:
+            arq.write("")
+    else:
+        prog_inicial()
 else:
     prog_principal()
