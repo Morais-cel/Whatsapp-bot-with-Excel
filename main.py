@@ -420,13 +420,13 @@ def prog_principal():
     list_date=str(datetime.date.today()).split("-")
     prog_principal.day_today=list_date[2]
     if int(prog_principal.day_today)>=10:
-        prog_principal.day_cons=prog_principal.day_today
+        prog_principal.day_cons=int(prog_principal.day_today)+1
     else:
         prog_principal.day_cons="0"+str(int(prog_principal.day_today)+1)
     prog_principal.month=list_date[1]
     prog_principal.year=list_date[0]
-    print(int(list_date[2]))
-    #print(prog_principal.day,prog_principal.month,prog_principal.year)
+    #print(int(list_date[2]))
+    print(prog_principal.day_cons,prog_principal.month,prog_principal.year)
 
     #--------------------------
 
@@ -438,8 +438,8 @@ def prog_principal():
         book_ncons=len(mes_inf["B"]) #Número de consultas existentes no mês
         for i in range(2,book_ncons+1):
             cell=str(mes_inf.cell(row=i,column=2).value)
-            print(cell)
-            print(f"{prog_principal.day_cons}.{prog_principal.month}.{prog_principal.year}")
+            #print(cell)
+            #print(f"{prog_principal.day_cons}.{prog_principal.month}.{prog_principal.year}")
             if cell==f"{prog_principal.day_cons}.{prog_principal.month}.{prog_principal.year}":
                 row_cons.append(i)
         return row_cons
@@ -560,10 +560,10 @@ def prog_principal():
     book_month=arq_xl[f"{prog_principal.month}"] #Selecionar worksheet do mês atual
 
     row_cons=Row_cons(book_month) #Função que define quais linhas da sheet contêm consultas para o dia atual
-    print(row_cons)
+    #print(row_cons)
 
     day_consult=Infs(row_cons) #Função que define uma lista que contêm as consultas que ocorrerão no dia seguindo o padrão (paciente,médico,telefone)
-    print(day_consult)
+    #print(day_consult)
 
     Last_open()
 
